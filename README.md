@@ -37,3 +37,24 @@ Total pesan dalam antrean saya mencapai **21** karena:
 - Subscriber memproses secara lambat → antrean menjadi penuh sesaat sebelum akhirnya pelan-pelan dikonsumsi subscriber.
 
 Ini mencerminkan sistem real-time, di mana producer bisa terus bekerja meski consumer lambat, selama RabbitMQ tetap stabil dan pesan tidak kedaluwarsa.
+
+## Run 3 subscriber consoles
+![img_1.png](img_1.png)
+
+## RabbitMQ
+Antrean cepat turun saat tiga subscriber berjalan.
+
+![img_2.png](img_2.png)
+
+## 💡 Refleksi dan Penjelasan
+
+Sebelumnya, saya mensimulasikan subscriber yang lambat dengan menambahkan delay (`thread::sleep`) pada kode subscriber. Ketika hanya satu subscriber yang berjalan, antrean pesan (queue) cepat menumpuk karena publisher mengirim pesan lebih cepat daripada subscriber memprosesnya.
+
+Namun setelah saya menjalankan tiga subscriber secara paralel (masing-masing di jendela konsol berbeda), terlihat bahwa:
+
+- Pesan dibagi secara otomatis oleh RabbitMQ menggunakan strategi round-robin.
+- Setiap subscriber hanya menangani sebagian pesan.
+- Pemrosesan menjadi lebih cepat karena berjalan paralel.
+- Lonjakan antrean pesan lebih cepat terurai dibanding sebelumnya.
+
+Ini mencerminkan prinsip arsitektur event-driven, di mana sistem dapat di-scale out secara horizontal dengan menambah jumlah subscriber agar beban bisa didistribusikan.
